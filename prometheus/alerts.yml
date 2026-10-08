@@ -1,0 +1,39 @@
+# Illustrative local-lab rules. Load with prometheus.yml to evaluate live traffic.
+groups:
+  - name: sre-reliability-lab
+    rules:
+      - alert: SimulatedAvailabilityFastBurn
+        expr: |
+          (
+            sum(rate(http_requests_total{route="/api/work",code=~"5.."}[5m]))
+            /
+            clamp_min(sum(rate(http_requests_total{route="/api/work"}[5m])), 1e-9)
+            > 0.0144
+          )
+          and
+          (
+            sum(rate(http_requests_total{route="/api/work",code=~"5.."}[60m]))
+            /
+            clamp_min(sum(rate(http_requests_total{route="/api/work"}[60m])), 1e-9)
+            > 0.0144
+          )
+        labels:
+          severity: lab
+        annotations:
+          summary: "Simulated 99.9% availability SLO is burning 14.4x in 5m and 60m windows"
+          runbook: "docs/RUNBOOK.md"
+      - alert: SimulatedLatencySloBreach
+        expr: |
+          (
+            sum(rate(http_request_duration_seconds_count{route="/api/work",code!~"5.."}[60m]))
+            -
+            sum(rate(http_request_duration_seconds_bucket{route="/api/work",code!~"5..",le="0.5"}[60m]))
+          )
+          /
+          clamp_min(sum(rate(http_request_duration_seconds_count{route="/api/work",code!~"5.."}[60m])), 1e-9)
+          > 0.01
+        labels:
+          severity: lab
+        annotations:
+          summary: "Simulated 99% under 500ms latency objective is breached over 60m"
+          runbook: "docs/RUNBOOK.md"

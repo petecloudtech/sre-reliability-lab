@@ -1,0 +1,55 @@
+{
+  "kind": "simulated SRE reliability lab",
+  "as_of": "2026-10-07T12:59:59.400000Z",
+  "definitions": {
+    "eligible_requests": "Rows represent valid /api/work requests; 5xx is availability failure.",
+    "availability_target": 0.999,
+    "latency_target": 0.99,
+    "latency_threshold_ms": 500.0,
+    "latency_denominator": "non-5xx requests",
+    "window_boundary": "(as_of - window, as_of]"
+  },
+  "windows": {
+    "5m": {
+      "availability": {
+        "good_fraction": 0.9,
+        "bad_count": 50,
+        "total": 500,
+        "allowed_bad": 0.5,
+        "budget_consumed_percent": 10000.0,
+        "burn_rate": 100.0,
+        "met": false
+      },
+      "latency": {
+        "good_fraction": 0.777778,
+        "bad_count": 100,
+        "total": 450,
+        "allowed_bad": 4.5,
+        "budget_consumed_percent": 2222.22,
+        "burn_rate": 22.222,
+        "met": false
+      }
+    },
+    "60m": {
+      "availability": {
+        "good_fraction": 0.983333,
+        "bad_count": 100,
+        "total": 6000,
+        "allowed_bad": 6.0,
+        "budget_consumed_percent": 1666.67,
+        "burn_rate": 16.667,
+        "met": false
+      },
+      "latency": {
+        "good_fraction": 0.966102,
+        "bad_count": 200,
+        "total": 5900,
+        "allowed_bad": 59.0,
+        "budget_consumed_percent": 338.98,
+        "burn_rate": 3.39,
+        "met": false
+      }
+    }
+  },
+  "simulated_fast_burn_alert": true
+}
